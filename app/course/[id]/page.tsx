@@ -6,17 +6,12 @@ import Navbar from "../../components/Navbar";
 import ProgressBar from "../../components/ProgressBar";
 
 const COURSES_DATA: Record<string, {
-  title: string;
-  instructor: string;
-  emoji: string;
-  color: string;
+  title: string; instructor: string; emoji: string; color: string;
   lessons: { id: number; title: string; duration: string; videoId: string }[];
 }> = {
   "1": {
-    title: "Complete JavaScript for Beginners",
-    instructor: "Sarah Johnson",
-    emoji: "⚡",
-    color: "linear-gradient(135deg, #f59e0b, #d97706)",
+    title: "Complete JavaScript for Beginners", instructor: "Sarah Johnson",
+    emoji: "⚡", color: "linear-gradient(135deg, #f59e0b, #d97706)",
     lessons: [
       { id: 1, title: "Introduction to JavaScript", duration: "8:24", videoId: "W6NZfCO5SIk" },
       { id: 2, title: "Variables & Data Types", duration: "12:10", videoId: "edlFjlzxkSI" },
@@ -31,10 +26,8 @@ const COURSES_DATA: Record<string, {
     ],
   },
   "2": {
-    title: "React & Next.js Masterclass",
-    instructor: "Ahmed Khan",
-    emoji: "⚛️",
-    color: "linear-gradient(135deg, #06b6d4, #0284c7)",
+    title: "React & Next.js Masterclass", instructor: "Ahmed Khan",
+    emoji: "⚛️", color: "linear-gradient(135deg, #06b6d4, #0284c7)",
     lessons: [
       { id: 1, title: "What is React?", duration: "10:00", videoId: "Tn6-PIqc4UM" },
       { id: 2, title: "JSX & Components", duration: "14:30", videoId: "7fPXI_MnBOY" },
@@ -51,10 +44,8 @@ const COURSES_DATA: Record<string, {
     ],
   },
   "3": {
-    title: "Python for Data Science",
-    instructor: "Dr. Emily Chen",
-    emoji: "🐍",
-    color: "linear-gradient(135deg, #22c55e, #15803d)",
+    title: "Python for Data Science", instructor: "Dr. Emily Chen",
+    emoji: "🐍", color: "linear-gradient(135deg, #22c55e, #15803d)",
     lessons: [
       { id: 1, title: "Python Basics", duration: "12:00", videoId: "_uQrJ0TkZlc" },
       { id: 2, title: "Lists & Dictionaries", duration: "14:00", videoId: "W8KRzm-HUcc" },
@@ -67,10 +58,8 @@ const COURSES_DATA: Record<string, {
     ],
   },
   "4": {
-    title: "UI/UX Design Fundamentals",
-    instructor: "Marco Rivera",
-    emoji: "🎨",
-    color: "linear-gradient(135deg, #ec4899, #9333ea)",
+    title: "UI/UX Design Fundamentals", instructor: "Marco Rivera",
+    emoji: "🎨", color: "linear-gradient(135deg, #ec4899, #9333ea)",
     lessons: [
       { id: 1, title: "Design Thinking", duration: "10:00", videoId: "a7sEoEvT8l8" },
       { id: 2, title: "Color Theory", duration: "12:00", videoId: "AvgCkHrcj7g" },
@@ -84,10 +73,8 @@ const COURSES_DATA: Record<string, {
     ],
   },
   "5": {
-    title: "Node.js & Express Backend",
-    instructor: "James Wilson",
-    emoji: "🖥️",
-    color: "linear-gradient(135deg, #6366f1, #4338ca)",
+    title: "Node.js & Express Backend", instructor: "James Wilson",
+    emoji: "🖥️", color: "linear-gradient(135deg, #6366f1, #4338ca)",
     lessons: [
       { id: 1, title: "Node.js Introduction", duration: "10:00", videoId: "TlB_eWDSMt4" },
       { id: 2, title: "Modules & NPM", duration: "12:00", videoId: "xHLd36QoS4k" },
@@ -103,10 +90,8 @@ const COURSES_DATA: Record<string, {
     ],
   },
   "6": {
-    title: "Machine Learning A-Z",
-    instructor: "Dr. Aisha Patel",
-    emoji: "🤖",
-    color: "linear-gradient(135deg, #f43f5e, #e11d48)",
+    title: "Machine Learning A-Z", instructor: "Dr. Aisha Patel",
+    emoji: "🤖", color: "linear-gradient(135deg, #f43f5e, #e11d48)",
     lessons: [
       { id: 1, title: "What is ML?", duration: "10:00", videoId: "ukzFI9rgwfU" },
       { id: 2, title: "Types of ML", duration: "12:00", videoId: "1AVYVHgFyKU" },
@@ -130,16 +115,15 @@ export default function CoursePage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-
   const course = COURSES_DATA[id];
 
   const [completedLessons, setCompletedLessons] = useState<Set<number>>(new Set());
   const [activeLesson, setActiveLesson] = useState(0);
+  const [showLessonList, setShowLessonList] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("elearn_user");
     if (!user) { router.push("/"); return; }
-
     const saved = localStorage.getItem(`progress_${id}`);
     if (saved) {
       const { completedIds } = JSON.parse(saved);
@@ -163,241 +147,260 @@ export default function CoursePage() {
   function toggleLesson(lessonId: number) {
     setCompletedLessons((prev) => {
       const next = new Set(prev);
-      if (next.has(lessonId)) {
-        next.delete(lessonId);
-      } else {
-        next.add(lessonId);
-      }
+      if (next.has(lessonId)) next.delete(lessonId);
+      else next.add(lessonId);
       localStorage.setItem(`progress_${id}`, JSON.stringify({
-        completed: next.size,
-        total,
-        completedIds: Array.from(next),
+        completed: next.size, total, completedIds: Array.from(next),
       }));
       return next;
     });
   }
 
   function goNext() {
-    if (activeLesson < course.lessons.length - 1) {
-      setActiveLesson((p) => p + 1);
-    }
+    if (activeLesson < course.lessons.length - 1) setActiveLesson((p) => p + 1);
   }
-
   function goPrev() {
     if (activeLesson > 0) setActiveLesson((p) => p - 1);
   }
-
   function markAndNext() {
     toggleLesson(currentLesson.id);
     goNext();
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0f172a", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
-      <Navbar />
+    <>
+      <style>{`
+        * { box-sizing: border-box; }
+        .lesson-item:hover { background: #263548 !important; }
+        @media (max-width: 768px) {
+          .course-layout { grid-template-columns: 1fr !important; }
+          .lesson-panel { display: none; }
+          .lesson-panel.open { display: block !important; }
+        }
+      `}</style>
+      <div style={{ minHeight: "100vh", background: "#0f172a", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+        <Navbar />
 
-      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "1.5rem 1rem" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "1rem" }}>
 
-        {/* Back button + title */}
-        <div style={{ marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "12px" }}>
-          <button
-            onClick={() => router.push("/dashboard")}
-            style={{
-              background: "#1e293b", border: "1px solid #334155",
-              borderRadius: "8px", padding: "6px 14px",
-              color: "#94a3b8", fontSize: "13px", fontWeight: 600,
-              cursor: "pointer", fontFamily: "inherit",
-            }}
-          >
-            ← Back
-          </button>
-          <div>
-            <h1 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "#f1f5f9" }}>
-              {course.emoji} {course.title}
-            </h1>
-            <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>by {course.instructor}</p>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div style={{
-          background: "#1e293b", borderRadius: "14px",
-          padding: "1.25rem 1.5rem", marginBottom: "1.25rem",
-          border: "1px solid #334155",
-        }}>
-          <ProgressBar progress={progress} total={total} completed={completed} />
-        </div>
-
-        {/* Main Layout */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "1.25rem" }}>
-
-          {/* Left — Video Player */}
-          <div>
-            {/* Video */}
-            <div style={{
-              background: "#000", borderRadius: "16px",
-              overflow: "hidden", aspectRatio: "16/9",
-              border: "1px solid #334155",
-            }}>
-              <iframe
-                key={currentLesson.videoId}
-                width="100%"
-                height="100%"
-                src={`https://www.youtube.com/embed/${currentLesson.videoId}?autoplay=0&rel=0`}
-                title={currentLesson.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{ border: "none", display: "block" }}
-              />
-            </div>
-
-            {/* Lesson info */}
-            <div style={{
-              background: "#1e293b", borderRadius: "14px",
-              padding: "1.25rem 1.5rem", marginTop: "1rem",
-              border: "1px solid #334155",
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem" }}>
-                <div>
-                  <p style={{ margin: "0 0 4px", fontSize: "11px", color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    Lesson {activeLesson + 1} of {total}
-                  </p>
-                  <h2 style={{ margin: 0, fontSize: "1.2rem", fontWeight: 800, color: "#f1f5f9" }}>
-                    {currentLesson.title}
-                  </h2>
-                  <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#64748b" }}>
-                    ⏱️ {currentLesson.duration}
-                  </p>
-                </div>
-
-                {/* Mark complete button */}
-                <button
-                  onClick={() => toggleLesson(currentLesson.id)}
-                  style={{
-                    padding: "8px 18px",
-                    background: completedLessons.has(currentLesson.id) ? "#14532d" : "linear-gradient(135deg, #3b82f6, #8b5cf6)",
-                    border: completedLessons.has(currentLesson.id) ? "1px solid #22c55e" : "none",
-                    borderRadius: "10px",
-                    color: completedLessons.has(currentLesson.id) ? "#22c55e" : "#fff",
-                    fontSize: "13px", fontWeight: 700,
-                    cursor: "pointer", fontFamily: "inherit",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {completedLessons.has(currentLesson.id) ? "✅ Completed" : "Mark as Complete"}
-                </button>
-              </div>
-
-              {/* Navigation buttons */}
-              <div style={{ display: "flex", gap: "10px", marginTop: "1rem" }}>
-                <button
-                  onClick={goPrev}
-                  disabled={activeLesson === 0}
-                  style={{
-                    flex: 1, padding: "0.65rem",
-                    background: "transparent",
-                    border: "1px solid #334155",
-                    borderRadius: "10px", color: "#94a3b8",
-                    fontSize: "13px", fontWeight: 600,
-                    cursor: activeLesson === 0 ? "not-allowed" : "pointer",
-                    opacity: activeLesson === 0 ? 0.4 : 1,
-                    fontFamily: "inherit",
-                  }}
-                >
-                  ← Previous
-                </button>
-                <button
-                  onClick={markAndNext}
-                  disabled={activeLesson === total - 1}
-                  style={{
-                    flex: 2, padding: "0.65rem",
-                    background: activeLesson === total - 1 ? "#1e293b" : "linear-gradient(135deg, #3b82f6, #8b5cf6)",
-                    border: "none", borderRadius: "10px",
-                    color: "#fff", fontSize: "13px", fontWeight: 700,
-                    cursor: activeLesson === total - 1 ? "not-allowed" : "pointer",
-                    opacity: activeLesson === total - 1 ? 0.4 : 1,
-                    fontFamily: "inherit",
-                  }}
-                >
-                  Complete & Next →
-                </button>
-              </div>
+          {/* Back + title */}
+          <div style={{ marginBottom: "1rem", display: "flex", alignItems: "flex-start", gap: "10px", flexWrap: "wrap" }}>
+            <button
+              onClick={() => router.push("/dashboard")}
+              style={{
+                background: "#1e293b", border: "1px solid #334155",
+                borderRadius: "8px", padding: "7px 14px",
+                color: "#94a3b8", fontSize: "13px", fontWeight: 600,
+                cursor: "pointer", fontFamily: "inherit", flexShrink: 0,
+                minHeight: "36px",
+              }}
+            >
+              ← Back
+            </button>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <h1 style={{ margin: 0, fontSize: "clamp(1rem, 4vw, 1.2rem)", fontWeight: 800, color: "#f1f5f9", lineHeight: 1.3 }}>
+                {course.emoji} {course.title}
+              </h1>
+              <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>by {course.instructor}</p>
             </div>
           </div>
 
-          {/* Right — Lesson List */}
+          {/* Progress Bar */}
           <div style={{
-            background: "#1e293b", borderRadius: "16px",
-            border: "1px solid #334155", overflow: "hidden",
-            height: "fit-content",
+            background: "#1e293b", borderRadius: "14px",
+            padding: "1rem 1.25rem", marginBottom: "1rem",
+            border: "1px solid #334155",
           }}>
-            <div style={{
-              padding: "1rem 1.25rem",
-              borderBottom: "1px solid #334155",
-              background: "#0f172a",
-            }}>
-              <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#f1f5f9" }}>
-                Course Lessons
-              </h3>
-              <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#64748b" }}>
-                {completed} of {total} completed
-              </p>
-            </div>
+            <ProgressBar progress={progress} total={total} completed={completed} />
+          </div>
 
-            <div style={{ maxHeight: "520px", overflowY: "auto" }}>
-              {course.lessons.map((lesson, index) => {
-                const isActive = index === activeLesson;
-                const isDone = completedLessons.has(lesson.id);
-                return (
-                  <div
-                    key={lesson.id}
-                    onClick={() => setActiveLesson(index)}
+          {/* Mobile: toggle lesson list */}
+          <button
+            onClick={() => setShowLessonList((v) => !v)}
+            style={{
+              display: "none", /* shown via media query below */
+              width: "100%", marginBottom: "0.75rem",
+              padding: "0.75rem", background: "#1e293b",
+              border: "1px solid #334155", borderRadius: "12px",
+              color: "#60a5fa", fontSize: "14px", fontWeight: 600,
+              cursor: "pointer", fontFamily: "inherit",
+              minHeight: "44px",
+            }}
+            className="mobile-toggle"
+          >
+            {showLessonList ? "▲ Hide Lessons" : `▼ All Lessons (${completed}/${total} done)`}
+          </button>
+
+          <style>{`
+            @media (max-width: 768px) {
+              .mobile-toggle { display: block !important; }
+            }
+          `}</style>
+
+          {/* Main Layout */}
+          <div className="course-layout" style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 320px",
+            gap: "1rem",
+            alignItems: "start",
+          }}>
+
+            {/* Left — Video + controls */}
+            <div>
+              <div style={{
+                background: "#000", borderRadius: "14px",
+                overflow: "hidden", aspectRatio: "16/9",
+                border: "1px solid #334155",
+              }}>
+                <iframe
+                  key={currentLesson.videoId}
+                  width="100%" height="100%"
+                  src={`https://www.youtube.com/embed/${currentLesson.videoId}?autoplay=0&rel=0`}
+                  title={currentLesson.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ border: "none", display: "block" }}
+                />
+              </div>
+
+              {/* Lesson info */}
+              <div style={{
+                background: "#1e293b", borderRadius: "14px",
+                padding: "1rem 1.25rem", marginTop: "0.75rem",
+                border: "1px solid #334155",
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.75rem" }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ margin: "0 0 4px", fontSize: "11px", color: "#64748b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                      Lesson {activeLesson + 1} of {total}
+                    </p>
+                    <h2 style={{ margin: 0, fontSize: "clamp(1rem, 3.5vw, 1.2rem)", fontWeight: 800, color: "#f1f5f9" }}>
+                      {currentLesson.title}
+                    </h2>
+                    <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#64748b" }}>⏱️ {currentLesson.duration}</p>
+                  </div>
+
+                  <button
+                    onClick={() => toggleLesson(currentLesson.id)}
                     style={{
-                      padding: "0.9rem 1.25rem",
-                      borderBottom: "1px solid #0f172a",
-                      cursor: "pointer",
-                      background: isActive ? "#1e3a5f" : "transparent",
-                      display: "flex", alignItems: "center", gap: "10px",
-                      transition: "background 0.15s",
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "#263548";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "transparent";
+                      padding: "8px 16px", flexShrink: 0,
+                      background: completedLessons.has(currentLesson.id) ? "#14532d" : "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+                      border: completedLessons.has(currentLesson.id) ? "1px solid #22c55e" : "none",
+                      borderRadius: "10px",
+                      color: completedLessons.has(currentLesson.id) ? "#22c55e" : "#fff",
+                      fontSize: "13px", fontWeight: 700,
+                      cursor: "pointer", fontFamily: "inherit",
+                      whiteSpace: "nowrap", minHeight: "40px",
                     }}
                   >
-                    {/* Status icon */}
-                    <div style={{
-                      width: "28px", height: "28px", borderRadius: "50%", flexShrink: 0,
-                      background: isDone ? "#14532d" : isActive ? "#1e3a8a" : "#0f172a",
-                      border: `2px solid ${isDone ? "#22c55e" : isActive ? "#3b82f6" : "#334155"}`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "12px", fontWeight: 700,
-                      color: isDone ? "#22c55e" : isActive ? "#60a5fa" : "#475569",
-                    }}>
-                      {isDone ? "✓" : index + 1}
-                    </div>
+                    {completedLessons.has(currentLesson.id) ? "✅ Completed" : "Mark as Complete"}
+                  </button>
+                </div>
 
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{
-                        margin: 0, fontSize: "13px", fontWeight: isActive ? 700 : 500,
-                        color: isActive ? "#f1f5f9" : isDone ? "#94a3b8" : "#cbd5e1",
-                        whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                {/* Nav buttons */}
+                <div style={{ display: "flex", gap: "10px", marginTop: "0.9rem" }}>
+                  <button
+                    onClick={goPrev}
+                    disabled={activeLesson === 0}
+                    style={{
+                      flex: 1, padding: "0.7rem",
+                      background: "transparent", border: "1px solid #334155",
+                      borderRadius: "10px", color: "#94a3b8",
+                      fontSize: "13px", fontWeight: 600,
+                      cursor: activeLesson === 0 ? "not-allowed" : "pointer",
+                      opacity: activeLesson === 0 ? 0.4 : 1,
+                      fontFamily: "inherit", minHeight: "44px",
+                    }}
+                  >
+                    ← Previous
+                  </button>
+                  <button
+                    onClick={markAndNext}
+                    disabled={activeLesson === total - 1}
+                    style={{
+                      flex: 2, padding: "0.7rem",
+                      background: activeLesson === total - 1 ? "#1e293b" : "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+                      border: "none", borderRadius: "10px",
+                      color: "#fff", fontSize: "13px", fontWeight: 700,
+                      cursor: activeLesson === total - 1 ? "not-allowed" : "pointer",
+                      opacity: activeLesson === total - 1 ? 0.4 : 1,
+                      fontFamily: "inherit", minHeight: "44px",
+                    }}
+                  >
+                    Complete & Next →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Right — Lesson list (hidden on mobile unless toggled) */}
+            <div
+              className={`lesson-panel ${showLessonList ? "open" : ""}`}
+              style={{
+                background: "#1e293b", borderRadius: "16px",
+                border: "1px solid #334155", overflow: "hidden",
+                height: "fit-content",
+              }}
+            >
+              <div style={{
+                padding: "0.9rem 1.1rem",
+                borderBottom: "1px solid #334155",
+                background: "#0f172a",
+              }}>
+                <h3 style={{ margin: 0, fontSize: "14px", fontWeight: 700, color: "#f1f5f9" }}>Course Lessons</h3>
+                <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#64748b" }}>{completed} of {total} completed</p>
+              </div>
+
+              <div style={{ maxHeight: "60vh", overflowY: "auto" }}>
+                {course.lessons.map((lesson, index) => {
+                  const isActive = index === activeLesson;
+                  const isDone = completedLessons.has(lesson.id);
+                  return (
+                    <div
+                      key={lesson.id}
+                      className="lesson-item"
+                      onClick={() => {
+                        setActiveLesson(index);
+                        setShowLessonList(false);
+                      }}
+                      style={{
+                        padding: "0.85rem 1.1rem",
+                        borderBottom: "1px solid #0f172a",
+                        cursor: "pointer",
+                        background: isActive ? "#1e3a5f" : "transparent",
+                        display: "flex", alignItems: "center", gap: "10px",
+                        transition: "background 0.15s",
+                        minHeight: "52px", /* touch-friendly */
+                      }}
+                    >
+                      <div style={{
+                        width: "26px", height: "26px", borderRadius: "50%", flexShrink: 0,
+                        background: isDone ? "#14532d" : isActive ? "#1e3a8a" : "#0f172a",
+                        border: `2px solid ${isDone ? "#22c55e" : isActive ? "#3b82f6" : "#334155"}`,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "11px", fontWeight: 700,
+                        color: isDone ? "#22c55e" : isActive ? "#60a5fa" : "#475569",
                       }}>
-                        {lesson.title}
-                      </p>
-                      <p style={{ margin: "2px 0 0", fontSize: "11px", color: "#475569" }}>
-                        {lesson.duration}
-                      </p>
+                        {isDone ? "✓" : index + 1}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          margin: 0, fontSize: "13px", fontWeight: isActive ? 700 : 500,
+                          color: isActive ? "#f1f5f9" : isDone ? "#94a3b8" : "#cbd5e1",
+                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                        }}>
+                          {lesson.title}
+                        </p>
+                        <p style={{ margin: "2px 0 0", fontSize: "11px", color: "#475569" }}>{lesson.duration}</p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
